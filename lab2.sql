@@ -32,15 +32,17 @@ CREATE TABLE Enrolled(
     FOREIGN KEY (cname) REFERENCES Class(name)
 );
 
-SELECT DISTINCT S.sname FROM Student AS S, Faculty AS F, Class as C, Enrolled as E where S.snum = E.snum AND F.fname = "Gaurav" AND C.fid = F.fid
-AND S.level = "JR";
+SELECT DISTINCT S.Sname
+FROM Student S, Class C, Enrolled E, Faculty F
+WHERE S.snum = E.snum AND E.cname = C.name AND C.fid = F.fid AND
+F.fname = "Gaurav" AND S.level = "JR"
 
 SELECT MAX(S.age) FROM Student AS S WHERE S.major = "CS" OR S.snum IN ( SELECT S.snum FROM Student AS S, Faculty as F, Class AS C, Enrolled AS E WHERE
 F.fname = "Gaurav" AND C.fid = F.fid AND E.cname = C.name);
 
 SELECT C.name From Class AS C WHERE room = "R128" OR C.name IN (SELECT E.cname FROM Enrolled AS E GROUP BY E.cname HAVING COUNT(*) >= 5);
 
-SELECT DISTINCT S.sname FROM Students AS S WHERE S.snum IN (SELECT E1.snum FROM Enrolled AS E1, Enrolled AS E2, Class AS C1, Class AS C2 WHERE C1.meets_at = C2.meets_at AND E1.cname = C1.name AND E2.cname = C2.name);
+SELECT DISTINCT S.sname FROM Student S WHERE S.snum IN (SELECT E1.snum FROM Enrolled E1, Enrolled E2, Class C1, Class C2 WHERE E1.snum = E2.snum AND E1.cname <> E2.cname AND E1.cname = C1.name AND E2.cname = C2.name AND C1.meets_at = C2.meets_at);
 
 SELECT DISTINCT F.fname FROM Faculty AS F WHERE NOT EXISTS (( SELECT * FROM Class C ) EXCEPT (SELECT C1.room FROM Class C1 WHERE
  C1.fid = F.fid ));
