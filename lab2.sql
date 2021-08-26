@@ -40,8 +40,7 @@ F.fname = "Gaurav" AND C.fid = F.fid AND E.cname = C.name);
 
 SELECT C.name From Class AS C WHERE room = "R128" OR C.name IN (SELECT E.cname FROM Enrolled AS E GROUP BY E.cname HAVING COUNT(*) >= 5);
 
-SELECT DISTINCT S.sname FROM Students AS S WHERE S.snum IN (SELECT E1.snum FROM E1 AS Enrolled, E2 AS Enrolled, C1 AS Class, C2 AS Class WHERE
-C1.meets_at = C2.meets_at AND E1.cname = C1.name AND E2.cname = C2.name);
+SELECT DISTINCT S.sname FROM Students AS S WHERE S.snum IN (SELECT E1.snum FROM Enrolled AS E1, Enrolled AS E2, Class AS C1, Class AS C2 WHERE C1.meets_at = C2.meets_at AND E1.cname = C1.name AND E2.cname = C2.name);
 
 SELECT DISTINCT F.fname FROM Faculty AS F WHERE NOT EXISTS (( SELECT * FROM Class C ) EXCEPT (SELECT C1.room FROM Class C1 WHERE
  C1.fid = F.fid ));
